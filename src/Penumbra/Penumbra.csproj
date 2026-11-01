@@ -10,7 +10,7 @@
     <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
     <AssemblyName>Penumbra</AssemblyName>
     <Product>Penumbra</Product>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <AssemblyTitle>Penumbra: brilho dos monitores no modo jogo</AssemblyTitle>
     <Description>Penumbra: brilho dos monitores no modo jogo</Description>
     <Company>ferbdev</Company>
