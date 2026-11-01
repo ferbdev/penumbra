@@ -110,15 +110,14 @@ public partial class WidgetWindow : Window
         Cards.Children.Clear();
         _panels.Clear();
 
-        foreach (var monitor in _monitors.OrderBy(m => m.Bounds.Left).ThenBy(m => m.Bounds.Top))
+        foreach (var monitor in MonitorService.PhysicalMonitors(_monitors, Main?.Id))
         {
-            var key = monitor.PanelKey ?? monitor.Id;
-            if (!_panels.TryGetValue(key, out var panel))
-                _panels[key] = panel = new Panel(monitor.Id);
+            var panel = new Panel(monitor.Id);
+            panel.MonitorIds.AddRange(MonitorService.SamePanel(_monitors, monitor).Select(m => m.Id));
 
             var card = new MonitorCard(this, monitor, panel, monitor.Id == Main?.Id);
             panel.Cards.Add(card);
-            panel.MonitorIds.Add(monitor.Id);
+            _panels[monitor.Id] = panel;
             Cards.Children.Add(card.Root);
         }
 
@@ -295,30 +294,8 @@ public partial class WidgetWindow : Window
         if (preset is null)
             return;
 
-        foreach (var monitor in _monitors.Where(m => m.Id != main?.Id).OrderBy(m => m.Bounds.Left))
-        {
-            Rows.Children.Add(monitor.SharesPanelWith(main)
-                ? BlockedRow(monitor)
-                : PresetRow(preset, monitor));
-        }
-    }
-
-    private UIElement BlockedRow(MonitorInfo monitor)
-    {
-        var grid = RowGrid();
-        grid.Children.Add(new TextBlock { Text = ShortName(monitor), VerticalAlignment = VerticalAlignment.Center });
-
-        var note = new TextBlock
-        {
-            Text = "Mesma tela do principal",
-            Foreground = (Brush)FindResource("Muted"),
-            FontSize = 12,
-            VerticalAlignment = VerticalAlignment.Center
-        };
-        Grid.SetColumn(note, 1);
-        Grid.SetColumnSpan(note, 2);
-        grid.Children.Add(note);
-        return grid;
+        foreach (var monitor in MonitorService.PhysicalMonitors(_monitors, main?.Id).Where(m => m.Id != main?.Id))
+            Rows.Children.Add(PresetRow(preset, monitor));
     }
 
     private UIElement PresetRow(Preset preset, MonitorInfo monitor)
@@ -544,7 +521,6 @@ public partial class WidgetWindow : Window
             glyph.Children.Add(_screen);
             glyph.Children.Add(star);
 
-            var display = monitor.GdiName.Replace(@"\\.\", "");
             var name = new TextBlock
             {
                 Text = monitor.Name,
@@ -556,7 +532,7 @@ public partial class WidgetWindow : Window
             };
             var detail = new TextBlock
             {
-                Text = monitor.Input is null ? display : $"{monitor.Input} · {display}",
+                Text = monitor.Input ?? "",
                 FontSize = 11,
                 Foreground = (Brush)owner.FindResource("Muted"),
                 TextAlignment = TextAlignment.Center,

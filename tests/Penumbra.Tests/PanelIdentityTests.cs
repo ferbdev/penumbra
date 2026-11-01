@@ -58,8 +58,45 @@ public class PanelIdentityTests
     public void Label_shows_input_when_known()
     {
         var monitor = new MonitorInfo("a", "LG", @"\\.\DISPLAY6", default, false, IntPtr.Zero, Input: "HDMI");
-        Assert.Equal("LG - HDMI (DISPLAY6)", monitor.DisplayLabel);
-        Assert.Equal("LG (DISPLAY6)", (monitor with { Input = null }).DisplayLabel);
+        Assert.Equal("LG - HDMI", monitor.DisplayLabel);
+        Assert.Equal("LG", (monitor with { Input = null }).DisplayLabel);
+    }
+
+    private static MonitorInfo At(string id, int left, string? panel) =>
+        new(id, "M", @"\\.\DISPLAY1", new Rectangle(left, 0, 100, 100), false, IntPtr.Zero, panel);
+
+    [Fact]
+    public void Two_inputs_of_one_monitor_become_one_item()
+    {
+        var monitors = new[] { At("dell", 0, "d"), At("lg-dp", 100, "l"), At("lg-hdmi", 200, "l") };
+
+        var physical = MonitorService.PhysicalMonitors(monitors, "lg-dp");
+
+        Assert.Equal(new[] { "dell", "lg-dp" }, physical.Select(m => m.Id));
+    }
+
+    [Fact]
+    public void Main_input_represents_the_monitor_even_when_not_first()
+    {
+        var monitors = new[] { At("lg-hdmi", 0, "l"), At("lg-dp", 100, "l") };
+
+        Assert.Equal("lg-dp", Assert.Single(MonitorService.PhysicalMonitors(monitors, "lg-dp")).Id);
+    }
+
+    [Fact]
+    public void Monitors_without_serial_are_never_merged()
+    {
+        var monitors = new[] { At("a", 0, null), At("b", 100, null) };
+
+        Assert.Equal(2, MonitorService.PhysicalMonitors(monitors, "a").Count);
+    }
+
+    [Fact]
+    public void Same_panel_includes_every_input_of_the_monitor()
+    {
+        var monitors = new[] { At("dell", 0, "d"), At("lg-dp", 100, "l"), At("lg-hdmi", 200, "l") };
+
+        Assert.Equal(new[] { "lg-dp", "lg-hdmi" }, MonitorService.SamePanel(monitors, monitors[1]).Select(m => m.Id));
     }
 
     [Fact]

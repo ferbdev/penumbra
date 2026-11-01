@@ -10,9 +10,14 @@ public static class IdentifyOverlay
 {
     public static void Show(IEnumerable<MonitorInfo> monitors)
     {
-        var number = 1;
+        var numbers = new Dictionary<string, int>();
         foreach (var monitor in monitors)
         {
+            // Entradas do mesmo monitor físico recebem o mesmo número.
+            var key = monitor.PanelKey ?? monitor.Id;
+            if (!numbers.TryGetValue(key, out var number))
+                numbers[key] = number = numbers.Count + 1;
+
             var badge = new Form
             {
                 FormBorderStyle = FormBorderStyle.None,
@@ -29,7 +34,7 @@ public static class IdentifyOverlay
                 ForeColor = Color.White,
                 Font = new Font("Segoe UI", 18, FontStyle.Bold),
                 TextAlign = ContentAlignment.MiddleCenter,
-                Text = $"{number++}\n{monitor.DisplayLabel}"
+                Text = $"{number}\n{monitor.DisplayLabel}"
             });
             badge.Show();
 

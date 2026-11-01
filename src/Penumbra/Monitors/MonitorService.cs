@@ -6,8 +6,7 @@ namespace Penumbra.Monitors;
 
 public sealed record MonitorInfo(string Id, string Name, string GdiName, Rectangle Bounds, bool IsPrimary, IntPtr Handle, string? PanelKey = null, string? Input = null)
 {
-    public string DisplayLabel =>
-        $"{Name}{(Input is null ? "" : $" - {Input}")} ({GdiName.Replace(@"\\.\", "")})";
+    public string DisplayLabel => Input is null ? Name : $"{Name} - {Input}";
 
     // Um monitor ligado por duas entradas aparece duas vezes, mas tem um só brilho e uma só energia.
     public bool SharesPanelWith(MonitorInfo? other) =>
@@ -48,6 +47,21 @@ public static class MonitorService
         monitors.FirstOrDefault(m => m.Id == mainId)
         ?? monitors.FirstOrDefault(m => m.IsPrimary)
         ?? monitors.FirstOrDefault();
+
+    public static IEnumerable<MonitorInfo> SamePanel(IEnumerable<MonitorInfo> monitors, MonitorInfo monitor) =>
+        monitors.Where(m => m.Id == monitor.Id || m.SharesPanelWith(monitor));
+
+    // Um item por monitor físico; se o principal for uma das entradas, é ele quem representa o monitor.
+    public static IReadOnlyList<MonitorInfo> PhysicalMonitors(IReadOnlyList<MonitorInfo> monitors, string? mainId)
+    {
+        var ordered = monitors.OrderBy(m => m.Bounds.Left).ThenBy(m => m.Bounds.Top).ToList();
+        var main = ResolveMain(monitors, mainId);
+
+        return ordered
+            .GroupBy(m => m.PanelKey ?? m.Id)
+            .Select(panel => panel.FirstOrDefault(m => m.Id == main?.Id) ?? panel.First())
+            .ToList();
+    }
 
     private static Dictionary<string, (string Path, string Name)> QueryTargets()
     {

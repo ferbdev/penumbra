@@ -18,7 +18,7 @@ public sealed class TrayApp : ApplicationContext
     private readonly ToolStripMenuItem _status = new() { Enabled = false };
     private readonly ToolStripMenuItem _manual = new("Ativar modo jogo agora") { CheckOnClick = true };
     private readonly ToolStripMenuItem _pause = new("Pausar detecção") { CheckOnClick = true };
-    private readonly Icon _normalIcon = TrayIcons.Create(Color.SteelBlue);
+    private readonly Icon _normalIcon = TrayIcons.Create();
     private readonly Icon _gameIcon = TrayIcons.Create(Color.LimeGreen);
     private readonly Icon _pausedIcon = TrayIcons.Create(Color.Gray);
     private readonly WinEventProc _foregroundChanged;
@@ -79,8 +79,10 @@ public sealed class TrayApp : ApplicationContext
         if (_tick is { IsCompleted: false })
             return;
 
-        var main = MonitorService.ResolveMain(MonitorService.Enumerate(), _config.MainMonitorId);
-        var fullscreen = !_pause.Checked && main is not null && FullscreenDetector.IsFullscreenOn(main.Bounds);
+        var monitors = MonitorService.Enumerate();
+        var main = MonitorService.ResolveMain(monitors, _config.MainMonitorId);
+        var fullscreen = !_pause.Checked && main is not null
+            && MonitorService.SamePanel(monitors, main).Any(m => FullscreenDetector.IsFullscreenOn(m.Bounds));
 
         var now = DateTime.Now;
         _tick = Task.Run(() => _controller.Tick(fullscreen, now));

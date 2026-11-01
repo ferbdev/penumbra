@@ -34,7 +34,7 @@ public static class Diagnostics
         {
             var brightness = DdcController.ReadBrightness(monitor);
             var power = DdcController.ReadPower(monitor);
-            Console.WriteLine($"{monitor.DisplayLabel} {monitor.Bounds.Width}x{monitor.Bounds.Height} principal={monitor.IsPrimary}");
+            Console.WriteLine($"{monitor.DisplayLabel} ({monitor.GdiName.Replace(@"\\.\", "")}) {monitor.Bounds.Width}x{monitor.Bounds.Height} principal={monitor.IsPrimary}");
             Console.WriteLine($"  id: {monitor.Id}");
             Console.WriteLine($"  painel: {monitor.PanelKey ?? "?"}");
             Console.WriteLine($"  brilho: {brightness?.Current.ToString() ?? "?"}/{brightness?.Max.ToString() ?? "?"} energia: {power?.Current.ToString() ?? "?"}");
