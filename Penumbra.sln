@@ -1,0 +1,36 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{010E23A8-D2E0-4178-9F75-F6870F8487BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Penumbra", "src\Penumbra\Penumbra.csproj", "{38324ED1-74E7-4DE8-B8BC-AD3677F26D29}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{73620485-9768-469A-9E8A-78256F7043C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Penumbra.Tests", "tests\Penumbra.Tests\Penumbra.Tests.csproj", "{CE1849AE-5F9E-4829-B610-A6E86C19A343}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{38324ED1-74E7-4DE8-B8BC-AD3677F26D29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38324ED1-74E7-4DE8-B8BC-AD3677F26D29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38324ED1-74E7-4DE8-B8BC-AD3677F26D29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38324ED1-74E7-4DE8-B8BC-AD3677F26D29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE1849AE-5F9E-4829-B610-A6E86C19A343}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE1849AE-5F9E-4829-B610-A6E86C19A343}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE1849AE-5F9E-4829-B610-A6E86C19A343}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE1849AE-5F9E-4829-B610-A6E86C19A343}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{38324ED1-74E7-4DE8-B8BC-AD3677F26D29} = {010E23A8-D2E0-4178-9F75-F6870F8487BD}
+		{CE1849AE-5F9E-4829-B610-A6E86C19A343} = {73620485-9768-469A-9E8A-78256F7043C3}
+	EndGlobalSection
+EndGlobal

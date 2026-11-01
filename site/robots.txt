@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ferbdev.github.io/penumbra/sitemap.xml

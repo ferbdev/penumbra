@@ -1,0 +1,46 @@
+name: Release
+
+# Publica o Penumbra.exe portátil no GitHub Releases a cada tag de versão (ex.: v0.1.0).
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Rodar testes
+        run: dotnet test -c Release
+
+      - name: Publicar executável único
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}".TrimStart("v")
+          dotnet publish src/Penumbra/Penumbra.csproj -c Release -r win-x64 --self-contained `
+            -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true `
+            -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=none `
+            -p:Version=$version -o publish
+
+      - name: Calcular SHA-256
+        shell: pwsh
+        run: |
+          (Get-FileHash publish/Penumbra.exe -Algorithm SHA256).Hash.ToLower() + "  Penumbra.exe" |
+            Set-Content publish/Penumbra.exe.sha256 -Encoding ascii
+
+      - name: Criar release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ github.ref_name }}" publish/Penumbra.exe publish/Penumbra.exe.sha256 `
+            --title "Penumbra ${{ github.ref_name }}" `
+            --notes "Baixe o **Penumbra.exe** abaixo, um único arquivo e sem instalação." --generate-notes

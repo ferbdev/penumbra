@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+    <AssemblyName>Penumbra</AssemblyName>
+    <Product>Penumbra</Product>
+    <Version>0.1.0</Version>
+    <AssemblyTitle>Penumbra: brilho dos monitores no modo jogo</AssemblyTitle>
+    <Description>Penumbra: brilho dos monitores no modo jogo</Description>
+    <Company>ferbdev</Company>
+    <Authors>ferbdev</Authors>
+    <Copyright>© 2026 ferbdev</Copyright>
+    <ApplicationIcon>Assets\Penumbra.ico</ApplicationIcon>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Using Remove="System.Windows.Forms" />
+    <Using Remove="System.Drawing" />
+    <Using Include="System.IO" />
+  </ItemGroup>
+
+</Project>
